@@ -13,6 +13,7 @@ class _RiveExerciseState extends State<RiveExercise> {
   double _lastXSwipe = 0.0;
   SMITrigger? _sweepDown;
   SMITrigger? _sweepUp;
+  double _lastNote = 0.0;
 
   void _onVerticalDragUpdate(DragUpdateDetails details) {
     setState(() {
@@ -50,7 +51,21 @@ class _RiveExerciseState extends State<RiveExercise> {
   }
 
   void onRiveEvent(RiveEvent event) {
-    print(event);
+    print(event.name); // Access event name, e.g. NoteChosen
+
+    // If an event has custom properties
+    var note = event.properties['note'] as double;
+    print(note); // Access event properties, e.g. numbers from -8 to 16
+
+    // If a change has to be made to the UI
+    // Schedule the setState for the next frame, as an event can be
+    // triggered during a current frame update
+    // This is recommended by the Rive docs
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _lastNote = note;
+      });
+    });
   }
 
   @override
